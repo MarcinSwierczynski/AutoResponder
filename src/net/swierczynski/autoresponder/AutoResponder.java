@@ -8,6 +8,8 @@ import android.content.*;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.telephony.gsm.*;
 import android.util.Log;
 import android.widget.*;
@@ -32,9 +34,15 @@ public class AutoResponder extends Activity {
         
         initalizeDatabase();
         initializeIntervalSpinner();
-        turnOnChecking();
+        initializeUnreceivedCallListener();
+        //turnOnChecking();
         createIconInNotificationArea();
     }
+
+	private void initializeUnreceivedCallListener() {
+		TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+		telephonyManager.listen(new NewUnreceivedCallListener(), PhoneStateListener.LISTEN_CALL_STATE);
+	}
 
 	private void initalizeDatabase() {
 		dbAdapter = new AutoResponderDbAdapter(this);
