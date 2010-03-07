@@ -3,11 +3,30 @@ package net.swierczynski.autoresponder;
 import android.telephony.gsm.SmsManager;
 
 public class TxtMsgSender {
-	private static final String MESSAGE_BODY = "Thanks for your call. Unfortunately I couldn't answer it. I'll call you back as soon as possible.";
-	
+	private AutoResponderDbAdapter dbAdapter;
+	private String profile;
 	private SmsManager smsMgr = SmsManager.getDefault();
 	
-	public void sendTextMessage(String telNumber) {
-		smsMgr.sendTextMessage(telNumber, null, MESSAGE_BODY, null, null);
+	private static TxtMsgSender instance;
+	
+	private TxtMsgSender(AutoResponderDbAdapter dbAdapter) {
+		this.dbAdapter = dbAdapter;
 	}
+	
+	public static TxtMsgSender getInstance(AutoResponderDbAdapter dbAdapter) {
+		if(instance == null) {
+			instance = new TxtMsgSender(dbAdapter);
+		}
+		return instance;
+	}
+
+	public void sendTextMessage(String telNumber) {
+		String messageBody = dbAdapter.fetchMessageBody(profile);
+		smsMgr.sendTextMessage(telNumber, null, messageBody, null, null);
+	}
+
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
+	
 }

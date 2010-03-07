@@ -97,6 +97,11 @@ public class AutoResponderDbAdapter {
 		return c;
     }
     
+    public String fetchMessageBody(String profile) {
+    	Cursor message = fetchMessage(profile);
+        return message.getString(message.getColumnIndexOrThrow(KEY_MSG_BODY));
+    }
+    
     public boolean updateMessage(String profile, String body) {
     	ContentValues args = new ContentValues();
     	args.put(KEY_MSG_BODY, body);

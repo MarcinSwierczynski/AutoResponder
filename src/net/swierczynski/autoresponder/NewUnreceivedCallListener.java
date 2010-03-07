@@ -10,9 +10,18 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 	private TxtMsgSender txtMsgSender;
 	private String phoneNumber;
 	private boolean enabled;
-		
-	public NewUnreceivedCallListener(TxtMsgSender txtMsgSender) {
+	
+	private static NewUnreceivedCallListener instance;
+	
+	private NewUnreceivedCallListener(TxtMsgSender txtMsgSender) {
 		this.txtMsgSender = txtMsgSender;
+	}
+	
+	public static NewUnreceivedCallListener getInstance(TxtMsgSender txtMsgSender) {
+		if(instance == null) {
+			instance = new NewUnreceivedCallListener(txtMsgSender);
+		}
+		return instance;
 	}
 
 	@Override
@@ -47,9 +56,9 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 	private void sendMsgIfCallWasntReceived() {
 		if(callWasUnreceived && phoneNumber != null) {
 			Log.d(TAG, "Unreceived call. Sending txt msg!");
+			callWasUnreceived = false;
 			txtMsgSender.sendTextMessage(phoneNumber);
 			phoneNumber = null;
-			callWasUnreceived = false;
 		}
 	}
 
