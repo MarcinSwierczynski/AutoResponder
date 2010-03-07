@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<TextView android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/app_name"
+		android:gravity="center" android:textSize="9pt" android:layout_margin="5px" />
+
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="@string/check_interval" android:layout_marginTop="10dip" />
+		<Spinner android:id="@+id/interval" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:prompt="@string/check_interval" />
+	</LinearLayout>
+
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="@string/msg_body" />
+	<EditText android:id="@+id/body" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_weight="1"
+		android:scrollbars="vertical" />
+
+	<Button android:id="@+id/confirm" android:text="@string/confirm"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+
+</LinearLayout>
+ 
