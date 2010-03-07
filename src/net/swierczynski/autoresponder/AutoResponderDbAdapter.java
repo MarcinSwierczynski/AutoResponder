@@ -6,28 +6,23 @@ import android.database.sqlite.*;
 import android.util.Log;
 
 public class AutoResponderDbAdapter {
-	public static final String KEY_CALL_ID = "_id";
-	public static final String KEY_PHONE_NUMBER = "number";
-	public static final String KEY_ANSWERED = "answered";
+	public static final String KEY_MSG_ID = "_id";
+	public static final String KEY_MSG_BODY = "msg_body";
 	
 	private static final String TABLE_CREATE = 
-		"create table calls (_id integer primary key, "
-		+ "number text not null, "
-		+ "answered integer not null);";
+		"create table autoresp_messages (_id integer primary key, "
+		+ "msg_body text not null);";
 	
 	private static final String DATABASE_NAME = "data";
-    private static final String DATABASE_TABLE = "calls";
+    private static final String DATABASE_TABLE = "autoresp_messages";
     private static final int DATABASE_VERSION = 2;
     private static final String TAG = AutoResponderDbAdapter.class.getName();
     
     private final Context mCtx;
-	private DatabaseHelper mDbHelper ;
+	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
-
-    	
-
 		public DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
@@ -41,7 +36,7 @@ public class AutoResponderDbAdapter {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-			db.execSQL("drop table if exists calls");
+			db.execSQL("drop table if exists autoresp_messages");
 			onCreate(db);
 		}
     	
@@ -61,37 +56,27 @@ public class AutoResponderDbAdapter {
     	mDbHelper.close();
     }
     
-    public boolean isPhoneCallPresent(long id) {
-    	Cursor c = mDb.query(DATABASE_TABLE, new String[] { KEY_CALL_ID }, KEY_CALL_ID + "=" + id, null, null, null, null);
-    	return c.getCount() > 0;
+    public long createMessage(String body) {
+    	ContentValues initialValues = new ContentValues();
+    	initialValues.put(KEY_MSG_BODY, body);
+    	return mDb.insert(DATABASE_TABLE, null, initialValues);
     }
     
-    public void addPhoneCall(long id, String number) {
-    	try {
-    		if(!isPhoneCallPresent(id)) {
-				ContentValues values = new ContentValues();
-				values.put(KEY_CALL_ID, id);
-				values.put(KEY_PHONE_NUMBER, number);
-				values.put(KEY_ANSWERED, 0);
-				mDb.insert(DATABASE_TABLE, null, values);
-    		}
-    	} catch (SQLiteConstraintException e) {
-			Log.w(TAG, "The number " + number + " is allready in a database");
-		}
-    }
-    
-    public boolean markCallAsAnswered(long id) {
-    	ContentValues values = new ContentValues();
-    	values.put(KEY_ANSWERED, 1);
-    	return mDb.update(DATABASE_TABLE, values, KEY_CALL_ID + "=" + id, null) > 0;
-    }
-    
-    public Cursor getUnansweredCalls() {
-    	Cursor c = mDb.query(DATABASE_TABLE, new String[] { KEY_CALL_ID, KEY_PHONE_NUMBER }, KEY_ANSWERED + "=" + 0, null, null, null, null);
-    	if(c != null) {
-    		c.moveToFirst();
-    	}
+    /**
+     * 
+     * @param id - will need this if we decide to support many different messages
+     * @return
+     */
+    public Cursor fetchMessage(long id) {
+    	Cursor c = mDb.query(DATABASE_TABLE, new String[] {KEY_MSG_BODY}, null, null, null, null, null);
+    	c.moveToFirst();
     	return c;
+    }
+    
+    public boolean updateNote(long id, String body) {
+    	ContentValues args = new ContentValues();
+    	args.put(KEY_MSG_BODY, body);
+    	return mDb.update(DATABASE_TABLE, args, KEY_MSG_ID + "=" + id, null) > 0;
     }
 
 }
