@@ -3,14 +3,15 @@ package net.swierczynski.autoresponder;
 import android.content.*;
 import android.database.*;
 import android.database.sqlite.*;
+import android.os.Parcelable.Creator;
 import android.util.Log;
 
 public class AutoResponderDbAdapter {
-	public static final String KEY_MSG_ID = "_id";
+	public static final String KEY_MSG_PROFILE = "_profile";
 	public static final String KEY_MSG_BODY = "msg_body";
 	
 	private static final String TABLE_CREATE = 
-		"create table autoresp_messages (_id integer primary key, "
+		"create table autoresp_messages (_profile text primary key, "
 		+ "msg_body text not null);";
 	
 	private static final String DATABASE_NAME = "data";
@@ -23,6 +24,8 @@ public class AutoResponderDbAdapter {
 	private SQLiteDatabase mDb;
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
+		private static final String INITIAL_MSG_BODY = "Thanks for your call. Unfortunately I couldn't answer it. I'll call you back as soon as possible.";
+
 		public DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
@@ -30,14 +33,22 @@ public class AutoResponderDbAdapter {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL(TABLE_CREATE);
+			createInitialMessage(db);
 		}
-
+		
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
 			db.execSQL("drop table if exists autoresp_messages");
 			onCreate(db);
+		}
+
+		private void createInitialMessage(SQLiteDatabase db) {
+			ContentValues initialValues = new ContentValues();
+			initialValues.put(KEY_MSG_PROFILE, "Main");
+			initialValues.put(KEY_MSG_BODY, INITIAL_MSG_BODY);
+			db.insert(DATABASE_TABLE, null, initialValues);
 		}
     	
     }
@@ -56,27 +67,40 @@ public class AutoResponderDbAdapter {
     	mDbHelper.close();
     }
     
-    public long createMessage(String body) {
-    	ContentValues initialValues = new ContentValues();
-    	initialValues.put(KEY_MSG_BODY, body);
-    	return mDb.insert(DATABASE_TABLE, null, initialValues);
+    public void saveMessage(String profile, String body) {
+    	boolean messageExists = fetchMessage(profile).getCount() > 0;
+		if(messageExists) {
+    		updateMessage(profile, body);
+    	} else {
+	    	createMessage(profile, body);
+    	}
     }
+
+	public void createMessage(String profile, String body) {
+		ContentValues initialValues = new ContentValues();
+		initialValues.put(KEY_MSG_PROFILE, profile);
+		initialValues.put(KEY_MSG_BODY, body);
+		mDb.insert(DATABASE_TABLE, null, initialValues);
+	}
     
     /**
      * 
-     * @param id - will need this if we decide to support many different messages
+     * @param profile - will need this if we decide to support many different messages
      * @return
      */
-    public Cursor fetchMessage(long id) {
-    	Cursor c = mDb.query(DATABASE_TABLE, new String[] {KEY_MSG_BODY}, null, null, null, null, null);
-    	c.moveToFirst();
-    	return c;
+    public Cursor fetchMessage(String profile) {
+    	Cursor c = mDb.query(DATABASE_TABLE, new String[] {KEY_MSG_PROFILE, KEY_MSG_BODY}, 
+    				KEY_MSG_PROFILE + "= '" + profile + "'", null, null, null, null);
+    	if (c != null) {
+			c.moveToFirst();
+		}
+		return c;
     }
     
-    public boolean updateNote(long id, String body) {
+    public boolean updateMessage(String profile, String body) {
     	ContentValues args = new ContentValues();
     	args.put(KEY_MSG_BODY, body);
-    	return mDb.update(DATABASE_TABLE, args, KEY_MSG_ID + "=" + id, null) > 0;
+    	return mDb.update(DATABASE_TABLE, args, KEY_MSG_PROFILE + "= '" + profile + "'", null) > 0;
     }
 
 }
