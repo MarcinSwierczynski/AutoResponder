@@ -7,12 +7,18 @@ import static android.telephony.TelephonyManager.*;
 public class NewUnreceivedCallListener extends PhoneStateListener {
 	private static final String TAG = NewUnreceivedCallListener.class.getName();
 	private boolean callWasUnreceived = false;
+	private TxtMsgSender txtMsgSender;
+	private String phoneNumber;
 		
+	public NewUnreceivedCallListener(TxtMsgSender txtMsgSender) {
+		this.txtMsgSender = txtMsgSender;
+	}
+
 	@Override
 	public void onCallStateChanged(int state, String incomingNumber) {
 		switch(state) {
 			case CALL_STATE_RINGING:
-				checkCallAsUnreceived();
+				checkCallAsUnreceived(incomingNumber);
 				break;
 			case CALL_STATE_OFFHOOK:	//call was received
 				checkCallAsReceived();
@@ -23,21 +29,23 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 		}
 	}
 
-	private void checkCallAsUnreceived() {
+	private void checkCallAsUnreceived(String incomingNumber) {
 		Log.d(TAG, "Telephone is ringing...");
+		phoneNumber = incomingNumber;
 		callWasUnreceived = true;
 	}
 
 	private void checkCallAsReceived() {
 		Log.d(TAG, "Call received.");
+		phoneNumber = null;
 		callWasUnreceived = false;
 	}
 
 	private void sendMsgIfCallWasntReceived() {
-		if(callWasUnreceived) {
+		if(callWasUnreceived && phoneNumber != null) {
 			Log.d(TAG, "Unreceived call. Sending txt msg!");
 			callWasUnreceived = false;
-			//TODO: send text msg
+			txtMsgSender.sendTextMessage(phoneNumber);
 		}
 	}
 }

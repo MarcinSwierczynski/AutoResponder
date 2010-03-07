@@ -7,15 +7,6 @@
 		android:layout_height="wrap_content" android:text="@string/app_name"
 		android:gravity="center" android:textSize="9pt" android:layout_margin="5px" />
 
-	<LinearLayout android:orientation="horizontal"
-		android:layout_width="fill_parent" android:layout_height="wrap_content">
-
-		<TextView android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="@string/check_interval" android:layout_marginTop="10dip" />
-		<Spinner android:id="@+id/interval" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:prompt="@string/check_interval" />
-	</LinearLayout>
-
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="@string/msg_body" />
 	<EditText android:id="@+id/body" android:layout_width="fill_parent"
@@ -26,4 +17,3 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 
 </LinearLayout>
- 
