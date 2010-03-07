@@ -3,13 +3,5 @@
 	<string name="app_name">AutoResponder 1.0</string>
 	<string name="msg_body">Text message body</string>
 	<string name="confirm">Confirm</string>
-	<string name="check_interval">Check interval (min) </string>
-	<string-array name="intervals_array">
-		<item>5</item>
-		<item>10</item>
-		<item>15</item>
-		<item>20</item>
-		<item>25</item>
-		<item>30</item>
-	</string-array>
+	<string name="enabled">Sending messages enabled</string>
 </resources>

@@ -6,12 +6,15 @@
 	<TextView android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:text="@string/app_name"
 		android:gravity="center" android:textSize="9pt" android:layout_margin="5px" />
-
+	
+	<CheckBox android:id="@+id/enabled" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/enabled" />
+	
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="@string/msg_body" />
 	<EditText android:id="@+id/body" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_weight="1"
-		android:scrollbars="vertical" />
+		android:scrollbars="vertical" android:gravity="top"/>
 
 	<Button android:id="@+id/confirm" android:text="@string/confirm"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />

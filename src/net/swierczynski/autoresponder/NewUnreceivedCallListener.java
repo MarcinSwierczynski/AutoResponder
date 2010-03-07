@@ -9,6 +9,7 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 	private boolean callWasUnreceived = false;
 	private TxtMsgSender txtMsgSender;
 	private String phoneNumber;
+	private boolean enabled;
 		
 	public NewUnreceivedCallListener(TxtMsgSender txtMsgSender) {
 		this.txtMsgSender = txtMsgSender;
@@ -16,16 +17,18 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 
 	@Override
 	public void onCallStateChanged(int state, String incomingNumber) {
-		switch(state) {
-			case CALL_STATE_RINGING:
-				checkCallAsUnreceived(incomingNumber);
-				break;
-			case CALL_STATE_OFFHOOK:	//call was received
-				checkCallAsReceived();
-				break;
-			case CALL_STATE_IDLE:		//no active calls
-				sendMsgIfCallWasntReceived();
-				break;
+		if(enabled) {
+			switch(state) {
+				case CALL_STATE_RINGING:
+					checkCallAsUnreceived(incomingNumber);
+					break;
+				case CALL_STATE_OFFHOOK:	//call was received
+					checkCallAsReceived();
+					break;
+				case CALL_STATE_IDLE:		//no active calls
+					sendMsgIfCallWasntReceived();
+					break;
+			}
 		}
 	}
 
@@ -44,8 +47,19 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 	private void sendMsgIfCallWasntReceived() {
 		if(callWasUnreceived && phoneNumber != null) {
 			Log.d(TAG, "Unreceived call. Sending txt msg!");
-			callWasUnreceived = false;
 			txtMsgSender.sendTextMessage(phoneNumber);
+			phoneNumber = null;
+			callWasUnreceived = false;
 		}
 	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		Log.d(TAG, "Application enabled: " + enabled);
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
 }
