@@ -7,17 +7,8 @@ public class TxtMsgSender {
 	private String profile;
 	private SmsManager smsMgr = SmsManager.getDefault();
 	
-	private static TxtMsgSender instance;
-	
-	private TxtMsgSender(AutoResponderDbAdapter dbAdapter) {
+	public TxtMsgSender(AutoResponderDbAdapter dbAdapter) {
 		this.dbAdapter = dbAdapter;
-	}
-	
-	public static TxtMsgSender getInstance(AutoResponderDbAdapter dbAdapter) {
-		if(instance == null) {
-			instance = new TxtMsgSender(dbAdapter);
-		}
-		return instance;
 	}
 
 	public void sendTextMessage(String telNumber) {

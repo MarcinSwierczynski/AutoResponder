@@ -107,5 +107,11 @@ public class AutoResponderDbAdapter {
     	args.put(KEY_MSG_BODY, body);
     	return mDb.update(DATABASE_TABLE, args, KEY_MSG_PROFILE + "= '" + profile + "'", null) > 0;
     }
+    
+    public static AutoResponderDbAdapter initializeDatabase(Context ctx) {
+    	AutoResponderDbAdapter dbAdapter = new AutoResponderDbAdapter(ctx);
+    	dbAdapter.open();
+    	return dbAdapter;
+    }
 
 }

@@ -9,35 +9,23 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 	private boolean callWasUnreceived = false;
 	private TxtMsgSender txtMsgSender;
 	private String phoneNumber;
-	private boolean enabled;
 	
-	private static NewUnreceivedCallListener instance;
-	
-	private NewUnreceivedCallListener(TxtMsgSender txtMsgSender) {
+	public NewUnreceivedCallListener(TxtMsgSender txtMsgSender) {
 		this.txtMsgSender = txtMsgSender;
-	}
-	
-	public static NewUnreceivedCallListener getInstance(TxtMsgSender txtMsgSender) {
-		if(instance == null) {
-			instance = new NewUnreceivedCallListener(txtMsgSender);
-		}
-		return instance;
 	}
 
 	@Override
 	public void onCallStateChanged(int state, String incomingNumber) {
-		if(enabled) {
-			switch(state) {
-				case CALL_STATE_RINGING:
-					checkCallAsUnreceived(incomingNumber);
-					break;
-				case CALL_STATE_OFFHOOK:	//call was received
-					checkCallAsReceived();
-					break;
-				case CALL_STATE_IDLE:		//no active calls
-					sendMsgIfCallWasntReceived();
-					break;
-			}
+		switch(state) {
+			case CALL_STATE_RINGING:
+				checkCallAsUnreceived(incomingNumber);
+				break;
+			case CALL_STATE_OFFHOOK:	//call was received
+				checkCallAsReceived();
+				break;
+			case CALL_STATE_IDLE:		//no active calls
+				sendMsgIfCallWasntReceived();
+				break;
 		}
 	}
 
@@ -60,15 +48,6 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 			txtMsgSender.sendTextMessage(phoneNumber);
 			phoneNumber = null;
 		}
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-		Log.d(TAG, "Application enabled: " + enabled);
-	}
-
-	public boolean isEnabled() {
-		return enabled;
 	}
 
 }
