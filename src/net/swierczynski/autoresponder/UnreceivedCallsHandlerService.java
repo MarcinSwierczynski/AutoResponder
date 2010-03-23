@@ -15,8 +15,6 @@ public class UnreceivedCallsHandlerService extends Service {
 	private final IBinder mBinder = new LocalBinder();
 	private NotificationManager notificationManager;
 	private NewUnreceivedCallListener unreceivedCallListener;
-	private TxtMsgSender txtMsgSender;
-	private AutoResponderDbAdapter dbAdapter;
 	
 	private static final String PROFILE = "Main";
 	
@@ -24,8 +22,6 @@ public class UnreceivedCallsHandlerService extends Service {
 	
 	@Override
 	public void onCreate() {
-		dbAdapter = AutoResponderDbAdapter.initializeDatabase(this);
-		initalizeMsgSender();
 		registerUnreceivedCallListener();
 		showNotificationIcon();
 		IS_RUNNING = true;
@@ -38,13 +34,15 @@ public class UnreceivedCallsHandlerService extends Service {
 		IS_RUNNING = false;
 	}
 	
-	private void initalizeMsgSender() {
-		txtMsgSender = new TxtMsgSender(dbAdapter);
+	private TxtMsgSender initalizeMsgSender() {
+		AutoResponderDbAdapter dbAdapter = AutoResponderDbAdapter.initializeDatabase(this);
+		TxtMsgSender txtMsgSender = new TxtMsgSender(dbAdapter);
 		txtMsgSender.setProfile(PROFILE);
+		return txtMsgSender;
 	}
 	
 	private void registerUnreceivedCallListener() {
-		unreceivedCallListener = new NewUnreceivedCallListener(txtMsgSender);
+		unreceivedCallListener = new NewUnreceivedCallListener(initalizeMsgSender());
 		TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 		telephonyManager.listen(unreceivedCallListener, PhoneStateListener.LISTEN_CALL_STATE);
 	}
