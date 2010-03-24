@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">AutoResponder 1.0</string>
-	<string name="msg_body">Text message body</string>
+	<string name="msg_body">Text message body (max. 160 chars)</string>
 	<string name="confirm">Confirm</string>
 	<string name="enabled">Sending messages enabled</string>
 </resources>
