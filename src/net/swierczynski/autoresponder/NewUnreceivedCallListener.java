@@ -30,20 +30,20 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 	}
 
 	private void checkCallAsUnreceived(String incomingNumber) {
-		Log.d(TAG, "Telephone is ringing...");
+//		Log.d(TAG, "Telephone is ringing...");
 		phoneNumber = incomingNumber;
 		callWasUnreceived = true;
 	}
 
 	private void checkCallAsReceived() {
-		Log.d(TAG, "Call received.");
+//		Log.d(TAG, "Call received.");
 		phoneNumber = null;
 		callWasUnreceived = false;
 	}
 
 	private void sendMsgIfCallWasntReceived() {
 		if(callWasUnreceived && phoneNumber != null) {
-			Log.d(TAG, "Unreceived call. Sending txt msg!");
+//			Log.d(TAG, "Unreceived call. Sending txt msg!");
 			callWasUnreceived = false;
 			txtMsgSender.sendTextMessage(phoneNumber);
 			phoneNumber = null;
