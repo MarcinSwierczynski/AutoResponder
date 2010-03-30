@@ -2,7 +2,7 @@
 <resources>
 	<string name="app_name">AutoResponder 1.0</string>
 	<string name="msg_body">Text message body (max. 160 chars)</string>
-	<string name="confirm">Confirm</string>
+	<string name="confirm">Save message</string>
 	<string name="enabled">Sending messages enabled</string>
 	<string name="profile">Choose a profile</string>
 	<string-array name="profiles_array">

@@ -15,25 +15,23 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class AutoResponder extends Activity {
 	private static final String TAG = AutoResponder.class.getName();
-	private String profile = "Main";
 
 	private AutoResponderDbAdapter dbAdapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.main);
-
+		
 		dbAdapter = AutoResponderDbAdapter.initializeDatabase(this);
-		registerCheckboxListener();
+		registerCheckboxListener();		
 		displayProfilesSpinner();
-		fillMessageBodyField();
 		registerConfirmButtonListener();
 	}
 
 	private void registerCheckboxListener() {
 		final CheckBox enabledCheckbox = (CheckBox) findViewById(R.id.enabled);
-		enabledCheckbox.setChecked(UnreceivedCallsHandlerService.IS_RUNNING);
+		enabledCheckbox.setChecked(UnreceivedCallsHandlerService.is_running);
 		enabledCheckbox.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				CheckBox cb = (CheckBox) v;
@@ -49,6 +47,7 @@ public class AutoResponder extends Activity {
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.profiles_array, android.R.layout.simple_spinner_item);
 	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	    profilesSpinner.setAdapter(adapter);
+	    profilesSpinner.setSelection(adapter.getPosition(UnreceivedCallsHandlerService.getProfile()));
 	    
 	    registerProfilesSpinnerListener(profilesSpinner);
 	}
@@ -78,7 +77,7 @@ public class AutoResponder extends Activity {
 
 	private void fillMessageBodyField() {
 		EditText msgBodyField = (EditText) findViewById(R.id.body);
-		String text = dbAdapter.fetchMessageBody(profile);
+		String text = dbAdapter.fetchMessageBody(UnreceivedCallsHandlerService.getProfile());
 		msgBodyField.setText(text);
 	}
 
@@ -88,13 +87,13 @@ public class AutoResponder extends Activity {
 			public void onClick(View v) {
 				EditText msgBodyField = (EditText) findViewById(R.id.body);
 				String msgBody = msgBodyField.getText().toString();
-				dbAdapter.saveMessage(profile, msgBody);
+				dbAdapter.saveMessage(UnreceivedCallsHandlerService.getProfile(), msgBody);
 			}
 		});
 	}
 	
 	public void setProfile(String profile) {
-		this.profile = profile;
+		UnreceivedCallsHandlerService.setProfile(profile);
 	}
 
 }

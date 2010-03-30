@@ -15,34 +15,36 @@ public class UnreceivedCallsHandlerService extends Service {
 	private final IBinder mBinder = new LocalBinder();
 	private NotificationManager notificationManager;
 	private NewUnreceivedCallListener unreceivedCallListener;
+	private static TxtMsgSender msgSender;
 	
-	private static final String PROFILE = "Main";
-	
-	public static boolean IS_RUNNING = false;
+	private static String profile = "Main";
+
+	public static boolean is_running = false;
 	
 	@Override
 	public void onCreate() {
 		registerUnreceivedCallListener();
 		showNotificationIcon();
-		IS_RUNNING = true;
+		is_running = true;
 	}
 
 	@Override
 	public void onDestroy() {
 		unregisterUnreceivedCallListener();
 		hideNotificationIcon();
-		IS_RUNNING = false;
+		is_running = false;
 	}
 	
 	private TxtMsgSender initalizeMsgSender() {
 		AutoResponderDbAdapter dbAdapter = AutoResponderDbAdapter.initializeDatabase(this);
 		TxtMsgSender txtMsgSender = new TxtMsgSender(dbAdapter);
-		txtMsgSender.setProfile(PROFILE);
+		txtMsgSender.setProfile(profile);
 		return txtMsgSender;
 	}
 	
 	private void registerUnreceivedCallListener() {
-		unreceivedCallListener = new NewUnreceivedCallListener(initalizeMsgSender());
+		msgSender = initalizeMsgSender();
+		unreceivedCallListener = new NewUnreceivedCallListener(msgSender);
 		TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 		telephonyManager.listen(unreceivedCallListener, PhoneStateListener.LISTEN_CALL_STATE);
 	}
@@ -86,6 +88,17 @@ public class UnreceivedCallsHandlerService extends Service {
 	public class LocalBinder extends Binder {
 		UnreceivedCallsHandlerService getService() {
 			return UnreceivedCallsHandlerService.this;
+		}
+	}
+	
+	public static String getProfile() {
+		return profile;
+	}
+
+	public static void setProfile(String profile) {
+		UnreceivedCallsHandlerService.profile = profile;
+		if(UnreceivedCallsHandlerService.msgSender != null) {
+			UnreceivedCallsHandlerService.msgSender.setProfile(profile);
 		}
 	}
 

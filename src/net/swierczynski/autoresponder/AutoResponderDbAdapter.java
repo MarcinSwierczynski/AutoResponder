@@ -8,6 +8,7 @@ import android.util.Log;
 public class AutoResponderDbAdapter {
 	public static final String KEY_MSG_PROFILE = "_profile";
 	public static final String KEY_MSG_BODY = "msg_body";
+	private static final String DEFAULT_MSG = "Thanks for your call. Unfortunately I couldn't answer it. I'll call you back as soon as possible.";
 	
 	private static final String TABLE_CREATE = 
 		"create table autoresp_messages (_profile text primary key, "
@@ -23,6 +24,7 @@ public class AutoResponderDbAdapter {
 	private SQLiteDatabase mDb;
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
+
 		public DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
@@ -42,7 +44,7 @@ public class AutoResponderDbAdapter {
 		}
 
 		private void createInitialMessages(SQLiteDatabase db) {
-			createMessageForProfile(db, "Main", "Thanks for your call. Unfortunately I couldn't answer it. I'll call you back as soon as possible.");
+			createMessageForProfile(db, "Main", DEFAULT_MSG);
 			createMessageForProfile(db, "Home", "Thanks for your call. I'm resting with my family. I'll call you back tomorrow morning.");
 			createMessageForProfile(db, "Work", "Thank you for your call. I'm at the meeting now. I'll call you back as soon as possible.");
 			createMessageForProfile(db, "Hanging out", "I'm hanging out with my friends now. I'll call you back... sooner or later ;)");
@@ -102,7 +104,7 @@ public class AutoResponderDbAdapter {
 		if(isMessageForGivenProfile) {
     		return message.getString(message.getColumnIndexOrThrow(KEY_MSG_BODY));
     	} else {
-    		return "";
+    		return DEFAULT_MSG;
     	}
     }
     
