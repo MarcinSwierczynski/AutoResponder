@@ -3,7 +3,6 @@ package net.swierczynski.autoresponder;
 import android.content.*;
 import android.database.*;
 import android.database.sqlite.*;
-import android.os.Parcelable.Creator;
 import android.util.Log;
 
 public class AutoResponderDbAdapter {
@@ -24,8 +23,6 @@ public class AutoResponderDbAdapter {
 	private SQLiteDatabase mDb;
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
-		private static final String INITIAL_MSG_BODY = "Thanks for your call. Unfortunately I couldn't answer it. I'll call you back as soon as possible.";
-
 		public DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
@@ -33,7 +30,7 @@ public class AutoResponderDbAdapter {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL(TABLE_CREATE);
-			createInitialMessage(db);
+			createInitialMessages(db);
 		}
 		
 		@Override
@@ -44,10 +41,17 @@ public class AutoResponderDbAdapter {
 			onCreate(db);
 		}
 
-		private void createInitialMessage(SQLiteDatabase db) {
+		private void createInitialMessages(SQLiteDatabase db) {
+			createMessageForProfile(db, "Main", "Thanks for your call. Unfortunately I couldn't answer it. I'll call you back as soon as possible.");
+			createMessageForProfile(db, "Home", "Thanks for your call. I'm resting with my family. I'll call you back tomorrow morning.");
+			createMessageForProfile(db, "Work", "Thank you for your call. I'm at the meeting now. I'll call you back as soon as possible.");
+			createMessageForProfile(db, "Hanging out", "I'm hanging out with my friends now. I'll call you back... sooner or later ;)");
+		}
+
+		private void createMessageForProfile(SQLiteDatabase db, String profile, String message) {
 			ContentValues initialValues = new ContentValues();
-			initialValues.put(KEY_MSG_PROFILE, "Main");
-			initialValues.put(KEY_MSG_BODY, INITIAL_MSG_BODY);
+			initialValues.put(KEY_MSG_PROFILE, profile);
+			initialValues.put(KEY_MSG_BODY, message);
 			db.insert(DATABASE_TABLE, null, initialValues);
 		}
     	
@@ -83,11 +87,6 @@ public class AutoResponderDbAdapter {
 		mDb.insert(DATABASE_TABLE, null, initialValues);
 	}
     
-    /**
-     * 
-     * @param profile - will need this if we decide to support many different messages
-     * @return
-     */
     public Cursor fetchMessage(String profile) {
     	Cursor c = mDb.query(DATABASE_TABLE, new String[] {KEY_MSG_PROFILE, KEY_MSG_BODY}, 
     				KEY_MSG_PROFILE + "= '" + profile + "'", null, null, null, null);
@@ -99,7 +98,12 @@ public class AutoResponderDbAdapter {
     
     public String fetchMessageBody(String profile) {
     	Cursor message = fetchMessage(profile);
-        return message.getString(message.getColumnIndexOrThrow(KEY_MSG_BODY));
+    	boolean isMessageForGivenProfile = message.getCount() > 0;
+		if(isMessageForGivenProfile) {
+    		return message.getString(message.getColumnIndexOrThrow(KEY_MSG_BODY));
+    	} else {
+    		return "";
+    	}
     }
     
     public boolean updateMessage(String profile, String body) {

@@ -1,26 +1,21 @@
 package net.swierczynski.autoresponder;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class AutoResponder extends Activity {
 	private static final String TAG = AutoResponder.class.getName();
-	protected static final String PROFILE = "Main";
+	private String profile = "Main";
 
 	private AutoResponderDbAdapter dbAdapter;
 
@@ -51,11 +46,25 @@ public class AutoResponder extends Activity {
 
 	private void displayProfilesSpinner() {
 		Spinner profilesSpinner = (Spinner) findViewById(R.id.profile);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-	            this, R.array.profiles_array, android.R.layout.simple_spinner_item);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.profiles_array, android.R.layout.simple_spinner_item);
 	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	    profilesSpinner.setAdapter(adapter);
+	    
+	    registerProfilesSpinnerListener(profilesSpinner);
+	}
 
+	private void registerProfilesSpinnerListener(Spinner profilesSpinner) {
+		profilesSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+				String choosenProfile = parent.getItemAtPosition(pos).toString();
+				setProfile(choosenProfile);
+				fillMessageBodyField();
+			}
+
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// Do nothing
+			}
+		});
 	}
 	
 	private void setServiceState(boolean enabled) {
@@ -69,7 +78,7 @@ public class AutoResponder extends Activity {
 
 	private void fillMessageBodyField() {
 		EditText msgBodyField = (EditText) findViewById(R.id.body);
-		String text = dbAdapter.fetchMessageBody(PROFILE);
+		String text = dbAdapter.fetchMessageBody(profile);
 		msgBodyField.setText(text);
 	}
 
@@ -79,9 +88,13 @@ public class AutoResponder extends Activity {
 			public void onClick(View v) {
 				EditText msgBodyField = (EditText) findViewById(R.id.body);
 				String msgBody = msgBodyField.getText().toString();
-				dbAdapter.saveMessage(PROFILE, msgBody);
+				dbAdapter.saveMessage(profile, msgBody);
 			}
 		});
+	}
+	
+	public void setProfile(String profile) {
+		this.profile = profile;
 	}
 
 }
