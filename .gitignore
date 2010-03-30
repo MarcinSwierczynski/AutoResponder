@@ -1,2 +1,5 @@
-/bin
-bin
+bin/
+release/
+.settings/
+.classpath
+.project
