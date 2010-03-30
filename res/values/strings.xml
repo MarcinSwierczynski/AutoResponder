@@ -4,4 +4,14 @@
 	<string name="msg_body">Text message body (max. 160 chars)</string>
 	<string name="confirm">Confirm</string>
 	<string name="enabled">Sending messages enabled</string>
+	<string name="profile">Choose a profile</string>
+	<string-array name="profiles_array">
+        <item>Main</item>
+        <item>Home</item>
+        <item>Work</item>
+        <item>Hanging out</item>
+        <item>My own 1</item>
+        <item>My own 2</item>
+        <item>My own 3</item>
+    </string-array>
 </resources>

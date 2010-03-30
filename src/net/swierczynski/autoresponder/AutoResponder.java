@@ -12,9 +12,11 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 public class AutoResponder extends Activity {
 	private static final String TAG = AutoResponder.class.getName();
@@ -29,6 +31,7 @@ public class AutoResponder extends Activity {
 
 		dbAdapter = AutoResponderDbAdapter.initializeDatabase(this);
 		registerCheckboxListener();
+		displayProfilesSpinner();
 		fillMessageBodyField();
 		registerConfirmButtonListener();
 	}
@@ -46,6 +49,15 @@ public class AutoResponder extends Activity {
 		});
 	}
 
+	private void displayProfilesSpinner() {
+		Spinner profilesSpinner = (Spinner) findViewById(R.id.profile);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+	            this, R.array.profiles_array, android.R.layout.simple_spinner_item);
+	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    profilesSpinner.setAdapter(adapter);
+
+	}
+	
 	private void setServiceState(boolean enabled) {
 		Intent service = new Intent(this, UnreceivedCallsHandlerService.class);
 		if (enabled) {
