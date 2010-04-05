@@ -1,6 +1,7 @@
 package net.swierczynski.autoresponder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class AutoResponder extends Activity {
@@ -88,6 +90,15 @@ public class AutoResponder extends Activity {
 				EditText msgBodyField = (EditText) findViewById(R.id.body);
 				String msgBody = msgBodyField.getText().toString();
 				dbAdapter.saveMessage(UnreceivedCallsHandlerService.getProfile(), msgBody);
+				showConfirmation();
+			}
+
+			private void showConfirmation() {
+				Context context = getApplicationContext();
+				String text = getText(R.string.message_saved) + " " + UnreceivedCallsHandlerService.getProfile();
+				int duration = Toast.LENGTH_LONG;
+				Toast confirmationMessage = Toast.makeText(context, text, duration);
+				confirmationMessage.show();
 			}
 		});
 	}

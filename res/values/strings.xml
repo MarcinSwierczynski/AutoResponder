@@ -14,4 +14,5 @@
         <item>My own 2</item>
         <item>My own 3</item>
     </string-array>
+    <string name="message_saved">Message content saved for profile </string>
 </resources>
