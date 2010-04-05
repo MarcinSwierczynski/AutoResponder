@@ -84,6 +84,7 @@ public class UnreceivedCallsHandlerService extends Service {
 		CharSequence text = getText(R.string.app_name);
 		long when = System.currentTimeMillis();
 		notification = new Notification(icon, text, when);
+		notification.flags |= Notification.FLAG_NO_CLEAR;
 	}
 	
 	@Override
