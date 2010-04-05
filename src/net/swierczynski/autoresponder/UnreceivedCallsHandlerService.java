@@ -15,10 +15,10 @@ public class UnreceivedCallsHandlerService extends Service {
 	private final IBinder mBinder = new LocalBinder();
 	private NotificationManager notificationManager;
 	private NewUnreceivedCallListener unreceivedCallListener;
-	private static TxtMsgSender msgSender;
+	private Notification notification;
 	
+	private static TxtMsgSender msgSender;
 	private static String profile = "Main";
-
 	public static boolean is_running = false;
 	
 	@Override
@@ -44,7 +44,7 @@ public class UnreceivedCallsHandlerService extends Service {
 	
 	private void registerUnreceivedCallListener() {
 		msgSender = initalizeMsgSender();
-		unreceivedCallListener = new NewUnreceivedCallListener(msgSender);
+		unreceivedCallListener = new NewUnreceivedCallListener(msgSender, this);
 		TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 		telephonyManager.listen(unreceivedCallListener, PhoneStateListener.LISTEN_CALL_STATE);
 	}
@@ -56,28 +56,34 @@ public class UnreceivedCallsHandlerService extends Service {
 	
 	private void showNotificationIcon() {
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		createIconInNotificationArea();
+		createNotification();
+		updateNotification(0);
 	}
 	
 	private void hideNotificationIcon() {
 		notificationManager.cancel(R.string.app_name);
 	}
 
-	private void createIconInNotificationArea() {
+	public void updateNotification(int repliesCounter) {
+		CharSequence contentText = "Has sent " + repliesCounter + " messages in this session";
+		PendingIntent contentIntent = getNotificationIntent();
+		
+		notification.setLatestEventInfo(getApplicationContext(), getText(R.string.app_name), contentText, contentIntent);
+		
+		notificationManager.notify(R.string.app_name, notification);
+	}
+
+	private PendingIntent getNotificationIntent() {
+		Intent notificationIntent = new Intent(this, AutoResponder.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		return contentIntent;
+	}
+
+	private void createNotification() {
 		int icon = R.drawable.icon;
 		CharSequence text = getText(R.string.app_name);
 		long when = System.currentTimeMillis();
-		Notification notification = new Notification(icon, text, when);
-		
-		Context context = getApplicationContext();
-		CharSequence contentTitle = text;
-		CharSequence contentText = "Missed calls checking is active!";
-		Intent notificationIntent = new Intent(this, AutoResponder.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-		
-		notificationManager.notify(R.string.app_name, notification);
+		notification = new Notification(icon, text, when);
 	}
 	
 	@Override

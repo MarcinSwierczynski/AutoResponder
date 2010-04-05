@@ -9,9 +9,13 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 	private boolean callWasUnreceived = false;
 	private TxtMsgSender txtMsgSender;
 	private String phoneNumber;
+	private int repliesCounter;
+	private UnreceivedCallsHandlerService unreceivedCallsHandlerService;
 	
-	public NewUnreceivedCallListener(TxtMsgSender txtMsgSender) {
+	public NewUnreceivedCallListener(TxtMsgSender txtMsgSender, UnreceivedCallsHandlerService unreceivedCallsHandlerService) {
 		this.txtMsgSender = txtMsgSender;
+		this.unreceivedCallsHandlerService = unreceivedCallsHandlerService;
+		this.repliesCounter = 0;
 	}
 
 	@Override
@@ -47,7 +51,12 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 			callWasUnreceived = false;
 			txtMsgSender.sendTextMessage(phoneNumber);
 			phoneNumber = null;
+			updateRepliesCounter();
 		}
 	}
 
+	private void updateRepliesCounter() {
+		repliesCounter++;
+		unreceivedCallsHandlerService.updateNotification(repliesCounter);
+	}
 }
