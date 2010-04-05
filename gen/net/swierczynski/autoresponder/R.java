@@ -31,6 +31,7 @@ public final class R {
         public static final int enabled=0x7f040003;
         public static final int message_saved=0x7f040005;
         public static final int msg_body=0x7f040001;
+        public static final int notification_text=0x7f040006;
         public static final int profile=0x7f040004;
     }
 }

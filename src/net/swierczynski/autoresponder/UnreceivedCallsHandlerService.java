@@ -65,10 +65,10 @@ public class UnreceivedCallsHandlerService extends Service {
 	}
 
 	public void updateNotification(int repliesCounter) {
-		CharSequence contentText = "Has sent " + repliesCounter + " messages in this session";
+		CharSequence description = String.format(getText(R.string.notification_text).toString(), repliesCounter);
 		PendingIntent contentIntent = getNotificationIntent();
 		
-		notification.setLatestEventInfo(getApplicationContext(), getText(R.string.app_name), contentText, contentIntent);
+		notification.setLatestEventInfo(getApplicationContext(), getText(R.string.app_name), description, contentIntent);
 		
 		notificationManager.notify(R.string.app_name, notification);
 	}
