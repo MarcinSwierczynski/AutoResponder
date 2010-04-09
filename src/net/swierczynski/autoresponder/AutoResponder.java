@@ -26,7 +26,7 @@ public class AutoResponder extends Activity {
 		setContentView(R.layout.main);
 		
 		dbAdapter = AutoResponderDbAdapter.initializeDatabase(this);
-		registerCheckboxListener();		
+		registerCheckboxListener();
 		displayProfilesSpinner();
 		registerConfirmButtonListener();
 	}
@@ -49,7 +49,7 @@ public class AutoResponder extends Activity {
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.profiles_array, android.R.layout.simple_spinner_item);
 	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	    profilesSpinner.setAdapter(adapter);
-	    profilesSpinner.setSelection(adapter.getPosition(UnreceivedCallsHandlerService.getProfile()));
+	    profilesSpinner.setSelection(adapter.getPosition(TxtMsgSender.getProfile()));
 	    
 	    registerProfilesSpinnerListener(profilesSpinner);
 	}
@@ -79,7 +79,7 @@ public class AutoResponder extends Activity {
 
 	private void fillMessageBodyField() {
 		EditText msgBodyField = (EditText) findViewById(R.id.body);
-		String text = dbAdapter.fetchMessageBody(UnreceivedCallsHandlerService.getProfile());
+		String text = dbAdapter.fetchMessageBody(TxtMsgSender.getProfile());
 		msgBodyField.setText(text);
 	}
 
@@ -89,13 +89,13 @@ public class AutoResponder extends Activity {
 			public void onClick(View v) {
 				EditText msgBodyField = (EditText) findViewById(R.id.body);
 				String msgBody = msgBodyField.getText().toString();
-				dbAdapter.saveMessage(UnreceivedCallsHandlerService.getProfile(), msgBody);
+				dbAdapter.saveMessage(TxtMsgSender.getProfile(), msgBody);
 				showConfirmation();
 			}
 
 			private void showConfirmation() {
 				Context context = getApplicationContext();
-				String text = getText(R.string.message_saved) + " " + UnreceivedCallsHandlerService.getProfile();
+				String text = getText(R.string.message_saved) + " " + TxtMsgSender.getProfile();
 				int duration = Toast.LENGTH_LONG;
 				Toast confirmationMessage = Toast.makeText(context, text, duration);
 				confirmationMessage.show();
@@ -104,7 +104,7 @@ public class AutoResponder extends Activity {
 	}
 	
 	public void setProfile(String profile) {
-		UnreceivedCallsHandlerService.setProfile(profile);
+		TxtMsgSender.setProfile(profile);
 	}
 
 }

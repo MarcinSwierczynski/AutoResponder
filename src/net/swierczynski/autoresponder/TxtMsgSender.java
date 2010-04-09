@@ -4,7 +4,7 @@ import android.telephony.gsm.SmsManager;
 
 public class TxtMsgSender {
 	private AutoResponderDbAdapter dbAdapter;
-	private String profile;
+	private static String profile = "Main";
 	private SmsManager smsMgr = SmsManager.getDefault();
 	
 	public TxtMsgSender(AutoResponderDbAdapter dbAdapter) {
@@ -16,8 +16,12 @@ public class TxtMsgSender {
 		smsMgr.sendTextMessage(telNumber, null, messageBody, null, null);
 	}
 
-	public void setProfile(String profile) {
-		this.profile = profile;
+	public static void setProfile(String profile) {
+		TxtMsgSender.profile = profile;
+	}
+	
+	public static String getProfile() {
+		return profile;
 	}
 	
 }
