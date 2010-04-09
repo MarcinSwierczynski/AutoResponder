@@ -6,16 +6,16 @@ import static android.telephony.TelephonyManager.*;
 
 public class NewUnreceivedCallListener extends PhoneStateListener {
 	private static final String TAG = NewUnreceivedCallListener.class.getName();
+
 	private boolean callWasUnreceived = false;
-	private TxtMsgSender txtMsgSender;
 	private String phoneNumber;
-	private int repliesCounter;
-	private UnreceivedCallsHandlerService unreceivedCallsHandlerService;
+
+	private TxtMsgSender txtMsgSender;
+	private NotificationArea notificationArea;
 	
-	public NewUnreceivedCallListener(TxtMsgSender txtMsgSender, UnreceivedCallsHandlerService unreceivedCallsHandlerService) {
+	public NewUnreceivedCallListener(TxtMsgSender txtMsgSender, NotificationArea notificationArea) {
 		this.txtMsgSender = txtMsgSender;
-		this.unreceivedCallsHandlerService = unreceivedCallsHandlerService;
-		this.repliesCounter = 0;
+		this.notificationArea = notificationArea;
 	}
 
 	@Override
@@ -48,15 +48,11 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 	private void sendMsgIfCallWasntReceived() {
 		if(callWasUnreceived && phoneNumber != null) {
 //			Log.d(TAG, "Unreceived call. Sending txt msg!");
-			callWasUnreceived = false;
 			txtMsgSender.sendTextMessage(phoneNumber);
-			phoneNumber = null;
-			updateRepliesCounter();
-		}
-	}
+			notificationArea.incrementRepliesCounter();
 
-	private void updateRepliesCounter() {
-		repliesCounter++;
-		unreceivedCallsHandlerService.updateNotification(repliesCounter);
+			callWasUnreceived = false;
+			phoneNumber = null;
+		}
 	}
 }
