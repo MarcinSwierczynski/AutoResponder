@@ -58,7 +58,7 @@ public class AutoResponder extends Activity {
 		profilesSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				String choosenProfile = parent.getItemAtPosition(pos).toString();
-				setProfile(choosenProfile);
+				TxtMsgSender.setProfile(choosenProfile);
 				fillMessageBodyField();
 			}
 
@@ -101,10 +101,6 @@ public class AutoResponder extends Activity {
 				confirmationMessage.show();
 			}
 		});
-	}
-	
-	public void setProfile(String profile) {
-		TxtMsgSender.setProfile(profile);
 	}
 
 }
