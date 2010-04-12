@@ -78,17 +78,15 @@ public class AutoResponder extends Activity {
 	}
 
 	private void fillMessageBodyField() {
-		EditText msgBodyField = (EditText) findViewById(R.id.body);
 		String text = dbAdapter.fetchMessageBody(TxtMsgSender.getProfile());
-		msgBodyField.setText(text);
+		setMessageContent(text);
 	}
 
 	private void registerConfirmButtonListener() {
 		Button confirmButton = (Button) findViewById(R.id.confirm);
 		confirmButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				EditText msgBodyField = (EditText) findViewById(R.id.body);
-				String msgBody = msgBodyField.getText().toString();
+				String msgBody = getMessageContent();
 				dbAdapter.saveMessage(TxtMsgSender.getProfile(), msgBody);
 				showConfirmation();
 			}
@@ -101,6 +99,31 @@ public class AutoResponder extends Activity {
 				confirmationMessage.show();
 			}
 		});
+	}
+	
+	private EditText getMessageBodyField() {
+		return (EditText) findViewById(R.id.body);
+	}
+	
+	private void setMessageContent(String content) {
+		getMessageBodyField().setText(content);
+	}
+	
+	private String getMessageContent() {
+		return getMessageBodyField().getText().toString();
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putString("messageContent", getMessageContent());
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		String content = savedInstanceState.getString("messageContent");
+		setMessageContent(content);
 	}
 
 }
