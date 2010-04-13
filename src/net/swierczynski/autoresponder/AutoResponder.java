@@ -87,7 +87,7 @@ public class AutoResponder extends Activity {
 		confirmButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				String msgBody = getMessageContent();
-				dbAdapter.saveMessage(TxtMsgSender.getProfile(), msgBody);
+				persistMessageContent(msgBody);
 				showConfirmation();
 			}
 
@@ -113,17 +113,15 @@ public class AutoResponder extends Activity {
 		return getMessageBodyField().getText().toString();
 	}
 	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString("messageContent", getMessageContent());
+	private void persistMessageContent(String content) {
+		dbAdapter.saveMessage(TxtMsgSender.getProfile(), content);
 	}
 	
 	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		String content = savedInstanceState.getString("messageContent");
-		setMessageContent(content);
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		String content = getMessageContent();
+		persistMessageContent(content);
 	}
 
 }
