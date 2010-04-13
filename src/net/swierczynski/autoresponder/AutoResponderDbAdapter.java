@@ -82,14 +82,14 @@ public class AutoResponderDbAdapter {
     	}
     }
 
-	public void createMessage(String profile, String body) {
+	private void createMessage(String profile, String body) {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_MSG_PROFILE, profile);
 		initialValues.put(KEY_MSG_BODY, body);
 		mDb.insert(DATABASE_TABLE, null, initialValues);
 	}
     
-    public Cursor fetchMessage(String profile) {
+    private Cursor fetchMessage(String profile) {
     	Cursor c = mDb.query(DATABASE_TABLE, new String[] {KEY_MSG_PROFILE, KEY_MSG_BODY}, 
     				KEY_MSG_PROFILE + "= '" + profile + "'", null, null, null, null);
     	if (c != null) {
@@ -99,16 +99,19 @@ public class AutoResponderDbAdapter {
     }
     
     public String fetchMessageBody(String profile) {
-    	Cursor message = fetchMessage(profile);
-    	boolean isMessageForGivenProfile = message.getCount() > 0;
-		if(isMessageForGivenProfile) {
-    		return message.getString(message.getColumnIndexOrThrow(KEY_MSG_BODY));
+    	Cursor messageCursor = fetchMessage(profile);
+    	boolean isMessageForGivenProfile = messageCursor.getCount() > 0;
+		String messageBody;
+    	if(isMessageForGivenProfile) {
+    		messageBody = messageCursor.getString(messageCursor.getColumnIndexOrThrow(KEY_MSG_BODY));
     	} else {
-    		return DEFAULT_MSG;
+    		messageBody = DEFAULT_MSG;
     	}
+    	messageCursor.close();
+    	return messageBody;
     }
     
-    public boolean updateMessage(String profile, String body) {
+    private boolean updateMessage(String profile, String body) {
     	ContentValues args = new ContentValues();
     	args.put(KEY_MSG_BODY, body);
     	return mDb.update(DATABASE_TABLE, args, KEY_MSG_PROFILE + "= '" + profile + "'", null) > 0;

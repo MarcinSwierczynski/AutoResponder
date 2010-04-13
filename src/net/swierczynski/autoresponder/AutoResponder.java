@@ -123,5 +123,11 @@ public class AutoResponder extends Activity {
 		String content = getMessageContent();
 		persistMessageContent(content);
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		dbAdapter.close();
+	}
 
 }
