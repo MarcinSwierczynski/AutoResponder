@@ -1,14 +1,9 @@
 package net.swierczynski.autoresponder;
 
-import net.swierczynski.autoresponder.calls.UnreceivedCallsHandlerService;
-import net.swierczynski.autoresponder.texts.TextResponderService;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -21,8 +16,6 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class AutoResponder extends Activity {
-	private static final String TAG = AutoResponder.class.getName();
-
 	private AutoResponderDbAdapter dbAdapter;
 
 	@Override
@@ -39,12 +32,12 @@ public class AutoResponder extends Activity {
 
 	private void registerCallsCheckboxListener() {
 		final CheckBox enabledCheckbox = (CheckBox) findViewById(R.id.enable_calls);
-		enabledCheckbox.setChecked(UnreceivedCallsHandlerService.is_running);
+		enabledCheckbox.setChecked(AutoResponderService.responseToCalls);
 		enabledCheckbox.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				CheckBox cb = (CheckBox) v;
 				boolean enabled = cb.isChecked();
-				setCallsServiceState(enabled);
+				setServiceState(enabled, "calls");
 			}
 
 		});
@@ -52,12 +45,12 @@ public class AutoResponder extends Activity {
 	
 	private void registerTextsCheckboxListener() {
 		final CheckBox enabledCheckbox = (CheckBox) findViewById(R.id.enable_texts);
-		enabledCheckbox.setChecked(TextResponderService.is_running);
+		enabledCheckbox.setChecked(AutoResponderService.responseToTexts);
 		enabledCheckbox.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				CheckBox cb = (CheckBox) v;
 				boolean enabled = cb.isChecked();
-				setTextsServiceState(enabled);
+				setServiceState(enabled, "texts");
 			}
 		});
 	}
@@ -86,24 +79,13 @@ public class AutoResponder extends Activity {
 		});
 	}
 	
-	private void setCallsServiceState(boolean enabled) {
-		Intent service = new Intent(this, UnreceivedCallsHandlerService.class);
-		if (enabled) {
-			startService(service);
-		} else {
-			stopService(service);
-		}
+	private void setServiceState(boolean enabled, String mode) {
+		Intent service = new Intent(this, AutoResponderService.class);
+		service.putExtra("isEnabled", enabled);
+		service.putExtra("mode", mode);
+		startService(service);
 	}
 	
-	private void setTextsServiceState(boolean enabled) {
-		Intent txtService = new Intent(this, TextResponderService.class);
-		if(enabled) {
-			startService(txtService);
-		} else {
-			stopService(txtService);
-		}
-	}
-
 	private void fillMessageBodyField() {
 		String text = dbAdapter.fetchMessageBody(TxtMsgSender.getProfile());
 		setMessageContent(text);

@@ -5,11 +5,15 @@ import android.telephony.gsm.SmsManager;
 
 public class TxtMsgSender {
 	private AutoResponderDbAdapter dbAdapter;
+	private NotificationArea notificationArea;
+
 	private static String profile = "Main";
+	
 	private SmsManager smsMgr = SmsManager.getDefault();
 	
-	public TxtMsgSender(AutoResponderDbAdapter dbAdapter) {
+	private TxtMsgSender(AutoResponderDbAdapter dbAdapter, NotificationArea notificationArea) {
 		this.dbAdapter = dbAdapter;
+		this.notificationArea = notificationArea;
 	}
 
 	public void sendTextMessage(String telNumber) {
@@ -17,6 +21,7 @@ public class TxtMsgSender {
 		if (telNumberExists) {
 			String messageBody = dbAdapter.fetchMessageBody(profile);
 			smsMgr.sendTextMessage(telNumber, null, messageBody, null, null);
+			notificationArea.incrementRepliesCounter();
 		}
 	}
 
@@ -28,9 +33,9 @@ public class TxtMsgSender {
 		return profile;
 	}
 	
-	public static TxtMsgSender getNewInstance(Context ctx) {
+	public static TxtMsgSender createAndSetUp(Context ctx, NotificationArea notificationArea) {
 		AutoResponderDbAdapter dbAdapter = AutoResponderDbAdapter.initializeDatabase(ctx);
-		TxtMsgSender txtMsgSender = new TxtMsgSender(dbAdapter);
+		TxtMsgSender txtMsgSender = new TxtMsgSender(dbAdapter, notificationArea);
 		return txtMsgSender;
 	}
 	

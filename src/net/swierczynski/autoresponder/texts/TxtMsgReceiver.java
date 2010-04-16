@@ -3,21 +3,18 @@ package net.swierczynski.autoresponder.texts;
 import java.util.ArrayList;
 
 import net.swierczynski.autoresponder.TxtMsgSender;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.gsm.SmsManager;
 import android.telephony.gsm.SmsMessage;
-import android.util.Log;
 
 public class TxtMsgReceiver extends BroadcastReceiver {
 
-	private Context mCtx;
+	private TxtMsgSender msgSender;
 
-	public TxtMsgReceiver(Context ctx) {
-		this.mCtx = ctx;
+	public TxtMsgReceiver(TxtMsgSender msgSender) {
+		this.msgSender = msgSender;
 	}
 
 	@Override
@@ -62,7 +59,6 @@ public class TxtMsgReceiver extends BroadcastReceiver {
 	}
 	
 	private void sendMessagesToAuthors(String[] numbers) {
-		TxtMsgSender msgSender = TxtMsgSender.getNewInstance(mCtx);
 		for (String number : numbers) {
 			msgSender.sendTextMessage(number);
 		}

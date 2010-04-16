@@ -12,9 +12,7 @@
             </intent-filter>
         </activity>
         
-        <service android:name="net.swierczynski.autoresponder.calls.UnreceivedCallsHandlerService" />
-        
-        <service android:name="net.swierczynski.autoresponder.texts.TextResponderService" />
+        <service android:name=".AutoResponderService" />
 
 </application>
     <uses-sdk android:minSdkVersion="3" />

@@ -1,9 +1,11 @@
 package net.swierczynski.autoresponder;
 
-import android.content.*;
-import android.database.*;
-import android.database.sqlite.*;
-import android.util.Log;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
 public class AutoResponderDbAdapter {
 	public static final String KEY_MSG_PROFILE = "_profile";
@@ -17,7 +19,6 @@ public class AutoResponderDbAdapter {
 	private static final String DATABASE_NAME = "data";
     private static final String DATABASE_TABLE = "autoresp_messages";
     private static final int DATABASE_VERSION = 2;
-    private static final String TAG = AutoResponderDbAdapter.class.getName();
     
     private final Context mCtx;
 	private DatabaseHelper mDbHelper;
@@ -37,8 +38,6 @@ public class AutoResponderDbAdapter {
 		
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//			Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-//                    + newVersion + ", which will destroy all old data");
 			db.execSQL("drop table if exists autoresp_messages");
 			onCreate(db);
 		}
