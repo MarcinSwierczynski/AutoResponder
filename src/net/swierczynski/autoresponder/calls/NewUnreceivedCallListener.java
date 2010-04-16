@@ -1,5 +1,7 @@
-package net.swierczynski.autoresponder;
+package net.swierczynski.autoresponder.calls;
 
+import net.swierczynski.autoresponder.NotificationArea;
+import net.swierczynski.autoresponder.TxtMsgSender;
 import android.content.Context;
 import android.telephony.PhoneStateListener;
 import android.util.Log;
@@ -18,7 +20,7 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 	public NewUnreceivedCallListener(Context ctx, NotificationArea notificationArea) {
 		this.mCtx = ctx;
 		this.notificationArea = notificationArea;
-		this.txtMsgSender = initalizeMsgSender();
+		this.txtMsgSender = TxtMsgSender.getNewInstance(mCtx);
 	}
 
 	@Override
@@ -57,11 +59,5 @@ public class NewUnreceivedCallListener extends PhoneStateListener {
 			callWasUnreceived = false;
 			phoneNumber = null;
 		}
-	}
-	
-	private TxtMsgSender initalizeMsgSender() {
-		AutoResponderDbAdapter dbAdapter = AutoResponderDbAdapter.initializeDatabase(mCtx);
-		TxtMsgSender txtMsgSender = new TxtMsgSender(dbAdapter);
-		return txtMsgSender;
 	}
 }

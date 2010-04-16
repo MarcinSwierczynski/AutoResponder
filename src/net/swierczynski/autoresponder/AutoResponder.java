@@ -1,9 +1,14 @@
 package net.swierczynski.autoresponder;
 
+import net.swierczynski.autoresponder.calls.UnreceivedCallsHandlerService;
+import net.swierczynski.autoresponder.texts.TextResponderService;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -26,21 +31,34 @@ public class AutoResponder extends Activity {
 		setContentView(R.layout.main);
 		
 		dbAdapter = AutoResponderDbAdapter.initializeDatabase(this);
-		registerCheckboxListener();
+		registerCallsCheckboxListener();
+		registerTextsCheckboxListener();
 		displayProfilesSpinner();
 		registerConfirmButtonListener();
 	}
 
-	private void registerCheckboxListener() {
-		final CheckBox enabledCheckbox = (CheckBox) findViewById(R.id.enabled);
+	private void registerCallsCheckboxListener() {
+		final CheckBox enabledCheckbox = (CheckBox) findViewById(R.id.enable_calls);
 		enabledCheckbox.setChecked(UnreceivedCallsHandlerService.is_running);
 		enabledCheckbox.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				CheckBox cb = (CheckBox) v;
 				boolean enabled = cb.isChecked();
-				setServiceState(enabled);
+				setCallsServiceState(enabled);
 			}
 
+		});
+	}
+	
+	private void registerTextsCheckboxListener() {
+		final CheckBox enabledCheckbox = (CheckBox) findViewById(R.id.enable_texts);
+		enabledCheckbox.setChecked(TextResponderService.is_running);
+		enabledCheckbox.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				CheckBox cb = (CheckBox) v;
+				boolean enabled = cb.isChecked();
+				setTextsServiceState(enabled);
+			}
 		});
 	}
 
@@ -68,12 +86,21 @@ public class AutoResponder extends Activity {
 		});
 	}
 	
-	private void setServiceState(boolean enabled) {
+	private void setCallsServiceState(boolean enabled) {
 		Intent service = new Intent(this, UnreceivedCallsHandlerService.class);
 		if (enabled) {
 			startService(service);
 		} else {
 			stopService(service);
+		}
+	}
+	
+	private void setTextsServiceState(boolean enabled) {
+		Intent txtService = new Intent(this, TextResponderService.class);
+		if(enabled) {
+			startService(txtService);
+		} else {
+			stopService(txtService);
 		}
 	}
 

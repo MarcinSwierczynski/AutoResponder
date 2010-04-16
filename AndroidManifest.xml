@@ -12,12 +12,14 @@
             </intent-filter>
         </activity>
         
-        <service android:name=".UnreceivedCallsHandlerService" />
+        <service android:name="net.swierczynski.autoresponder.calls.UnreceivedCallsHandlerService" />
+        
+        <service android:name="net.swierczynski.autoresponder.texts.TextResponderService" />
 
-    </application>
+</application>
     <uses-sdk android:minSdkVersion="3" />
 
-
+<uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
 <uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
 <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
 </manifest>  

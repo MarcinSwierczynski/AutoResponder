@@ -1,5 +1,6 @@
 package net.swierczynski.autoresponder;
 
+import android.content.Context;
 import android.telephony.gsm.SmsManager;
 
 public class TxtMsgSender {
@@ -12,8 +13,11 @@ public class TxtMsgSender {
 	}
 
 	public void sendTextMessage(String telNumber) {
-		String messageBody = dbAdapter.fetchMessageBody(profile);
-		smsMgr.sendTextMessage(telNumber, null, messageBody, null, null);
+		boolean telNumberExists = telNumber != null && telNumber.length() > 0;
+		if (telNumberExists) {
+			String messageBody = dbAdapter.fetchMessageBody(profile);
+			smsMgr.sendTextMessage(telNumber, null, messageBody, null, null);
+		}
 	}
 
 	public static void setProfile(String profile) {
@@ -22,6 +26,12 @@ public class TxtMsgSender {
 	
 	public static String getProfile() {
 		return profile;
+	}
+	
+	public static TxtMsgSender getNewInstance(Context ctx) {
+		AutoResponderDbAdapter dbAdapter = AutoResponderDbAdapter.initializeDatabase(ctx);
+		TxtMsgSender txtMsgSender = new TxtMsgSender(dbAdapter);
+		return txtMsgSender;
 	}
 	
 }

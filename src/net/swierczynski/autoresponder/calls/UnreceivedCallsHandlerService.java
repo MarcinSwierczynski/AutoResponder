@@ -1,5 +1,6 @@
-package net.swierczynski.autoresponder;
+package net.swierczynski.autoresponder.calls;
 
+import net.swierczynski.autoresponder.NotificationArea;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;

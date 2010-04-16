@@ -3,7 +3,8 @@
 	<string name="app_name">AutoResponder</string>
 	<string name="msg_body">Text message body (max. 160 chars)</string>
 	<string name="confirm">Save message</string>
-	<string name="enabled">Sending messages enabled</string>
+	<string name="enable_calls">Respond to phone calls</string>
+	<string name="enable_texts">Respond to text messages</string>
 	<string name="profile">Choose a profile</string>
     <string name="message_saved">Message content saved for profile</string>
     <string name="notification_text">Has sent %d message(s) in this session</string>
