@@ -1,39 +1,31 @@
 package net.swierczynski.autoresponder;
 
-import net.swierczynski.autoresponder.calls.UnreceivedCallListener;
-import net.swierczynski.autoresponder.texts.TxtMsgReceiver;
+import net.swierczynski.autoresponder.calls.UnreceivedCallsService;
+import net.swierczynski.autoresponder.texts.IncomingMsgsService;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 
 public class AutoResponderService extends Service {
 	private final IBinder mBinder = new LocalBinder();
 
-	private UnreceivedCallListener unreceivedCallListener;
-	private TxtMsgReceiver txtReceiver;
+	private UnreceivedCallsService callsService;
+	private IncomingMsgsService msgsService;
 	private NotificationArea notificationArea;
-	private TxtMsgSender msgSender;
-
-	public static boolean responseToCalls = false;
-	public static boolean responseToTexts = false;
 	
 	@Override
 	public void onCreate() {
 		if(!isIconVisible()) {
-			firstServiceStart();
+			initializeServiceFirstStart();
 		}
 	}
 
-	private void firstServiceStart() {
+	private void initializeServiceFirstStart() {
 		notificationArea = new NotificationArea(this);
-		msgSender = TxtMsgSender.createAndSetUp(this, notificationArea);
+		callsService = new UnreceivedCallsService(this, notificationArea);
+		msgsService = new IncomingMsgsService(this, notificationArea);
 	}
 	
 	@Override
@@ -72,51 +64,22 @@ public class AutoResponderService extends Service {
 
 	private void changeCallsModeState(boolean isEnabled) {
 		if(isEnabled) {
-			registerUnreceivedCallListener();
+			callsService.register();
 		} else {
-			unregisterUnreceivedCallListener();
+			callsService.unregister();
 		}
 	}
 	
 	private void changeTextsModeState(boolean isEnabled) {
 		if(isEnabled) {
-			registerTextsListener();
+			msgsService.register();
 		} else {
-			unregisterTextsListener();
+			msgsService.unregister();
 		}
-	}
-
-	private void registerUnreceivedCallListener() {
-		unreceivedCallListener = new UnreceivedCallListener(msgSender);
-		TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(unreceivedCallListener, PhoneStateListener.LISTEN_CALL_STATE);
-		responseToCalls = true;
-		Log.i("AutoResponder", "Calls listener registered");
-	}
-
-	private void unregisterUnreceivedCallListener() {
-		TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(unreceivedCallListener, PhoneStateListener.LISTEN_NONE);
-		responseToCalls = false;
-		Log.i("AutoResponder", "Calls listener unregistered");
-	}
-	
-	private void registerTextsListener() {
-		txtReceiver = new TxtMsgReceiver(msgSender);
-		IntentFilter incomingTxtFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-		registerReceiver(txtReceiver, incomingTxtFilter);
-		responseToTexts = true;
-		Log.i("AutoResponder", "Texts listener registered");
-	}
-	
-	private void unregisterTextsListener() {
-		unregisterReceiver(txtReceiver);
-		responseToTexts = false;
-		Log.i("AutoResponder", "Texts listener unregistered");
 	}
 	
 	public static boolean isIconVisible() {
-		return responseToCalls || responseToTexts;
+		return UnreceivedCallsService.isActive || IncomingMsgsService.isActive;
 	}
 
 	@Override

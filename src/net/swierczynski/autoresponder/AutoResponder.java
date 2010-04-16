@@ -1,5 +1,7 @@
 package net.swierczynski.autoresponder;
 
+import net.swierczynski.autoresponder.calls.UnreceivedCallsService;
+import net.swierczynski.autoresponder.texts.IncomingMsgsService;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -32,7 +34,7 @@ public class AutoResponder extends Activity {
 
 	private void registerCallsCheckboxListener() {
 		final CheckBox enabledCheckbox = (CheckBox) findViewById(R.id.enable_calls);
-		enabledCheckbox.setChecked(AutoResponderService.responseToCalls);
+		enabledCheckbox.setChecked(UnreceivedCallsService.isActive);
 		enabledCheckbox.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				CheckBox cb = (CheckBox) v;
@@ -45,7 +47,7 @@ public class AutoResponder extends Activity {
 	
 	private void registerTextsCheckboxListener() {
 		final CheckBox enabledCheckbox = (CheckBox) findViewById(R.id.enable_texts);
-		enabledCheckbox.setChecked(AutoResponderService.responseToTexts);
+		enabledCheckbox.setChecked(IncomingMsgsService.isActive);
 		enabledCheckbox.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				CheckBox cb = (CheckBox) v;
