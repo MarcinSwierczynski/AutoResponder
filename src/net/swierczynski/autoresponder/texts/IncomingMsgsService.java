@@ -27,7 +27,12 @@ public class IncomingMsgsService {
 	}
 	
 	public void unregister() {
-		mCtx.unregisterReceiver(txtReceiver);
-		isActive = false;
+		try {
+			mCtx.unregisterReceiver(txtReceiver);
+		} catch (IllegalArgumentException e) { 
+			// Do nothing
+		} finally { 
+			isActive = false;
+		}
 	}
 }

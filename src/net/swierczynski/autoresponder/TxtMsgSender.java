@@ -9,8 +9,6 @@ public class TxtMsgSender {
 
 	private static String profile = "Main";
 	
-	private SmsManager smsMgr = SmsManager.getDefault();
-	
 	private TxtMsgSender(AutoResponderDbAdapter dbAdapter, NotificationArea notificationArea) {
 		this.dbAdapter = dbAdapter;
 		this.notificationArea = notificationArea;
@@ -20,7 +18,10 @@ public class TxtMsgSender {
 		boolean telNumberExists = telNumber != null && telNumber.length() > 0;
 		if (telNumberExists) {
 			String messageBody = dbAdapter.fetchMessageBody(profile);
+			
+			SmsManager smsMgr = SmsManager.getDefault();
 			smsMgr.sendTextMessage(telNumber, null, messageBody, null, null);
+			
 			notificationArea.incrementRepliesCounter();
 		}
 	}
