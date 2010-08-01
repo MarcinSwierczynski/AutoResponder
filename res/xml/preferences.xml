@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="User interface">
+		<CheckBoxPreference android:key="ICON_IN_TASKBAR" android:title="Show icon in taskbar"
+							android:summary="Show icon in taskbar if autoresponding is active"
+							android:defaultValue="true" />
+	</PreferenceCategory>
+</PreferenceScreen>

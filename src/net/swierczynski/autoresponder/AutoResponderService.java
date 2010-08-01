@@ -1,14 +1,14 @@
 package net.swierczynski.autoresponder;
 
 import net.swierczynski.autoresponder.calls.UnreceivedCallsService;
+import net.swierczynski.autoresponder.preferences.UserPreferences;
 import net.swierczynski.autoresponder.texts.IncomingMsgsService;
 import android.app.Service;
-import android.content.Intent;
-import android.os.Binder;
-import android.os.Bundle;
-import android.os.IBinder;
+import android.content.*;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.*;
 
-public class AutoResponderService extends Service {
+public class AutoResponderService extends Service implements OnSharedPreferenceChangeListener {
 	private final IBinder mBinder = new LocalBinder();
 
 	private UnreceivedCallsService callsService;
@@ -17,7 +17,7 @@ public class AutoResponderService extends Service {
 	
 	@Override
 	public void onCreate() {
-		if(!isIconVisible()) {
+		if(!isAnyRespondingServiceActive()) {
 			initializeServiceFirstStart();
 		}
 	}
@@ -26,6 +26,7 @@ public class AutoResponderService extends Service {
 		notificationArea = new NotificationArea(this);
 		callsService = new UnreceivedCallsService(this, notificationArea);
 		msgsService = new IncomingMsgsService(this, notificationArea);
+		UserPreferences.registerPreferencesChangeListener(getApplicationContext(), this);
 	}
 	
 	@Override
@@ -44,16 +45,23 @@ public class AutoResponderService extends Service {
 			}
 		}
 		propagateStateToNotificationArea();
+		stopIfNoRespondingServicesAreActive();
 	}
 
 	private void propagateStateToNotificationArea() {
-		if(isIconVisible()) {
+		if(UserPreferences.isIconInTaskbarSelected(this) && isAnyRespondingServiceActive()) {
 			notificationArea.showNotificationIcon();			
 		} else {
-			stopSelf();
+			notificationArea.hideNotificationIcon();
 		}
 	}
 
+	private void stopIfNoRespondingServicesAreActive() {
+		if (!isAnyRespondingServiceActive()) {
+			stopSelf();
+		}
+	}
+	
 	private void changeServiceMode(String mode, boolean isEnabled) {
 		if(mode.equals("calls")) {
 			changeCallsModeState(isEnabled);
@@ -78,7 +86,7 @@ public class AutoResponderService extends Service {
 		}
 	}
 	
-	public static boolean isIconVisible() {
+	private static boolean isAnyRespondingServiceActive() {
 		return UnreceivedCallsService.isActive || IncomingMsgsService.isActive;
 	}
 
@@ -91,6 +99,10 @@ public class AutoResponderService extends Service {
 		AutoResponderService getService() {
 			return AutoResponderService.this;
 		}
+	}
+
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		propagateStateToNotificationArea();
 	}
 
 }

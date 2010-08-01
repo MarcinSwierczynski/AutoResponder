@@ -17,4 +17,5 @@
         <item>My own 2</item>
         <item>My own 3</item>
     </string-array>
+    <string name="menu_preferences">Preferences</string>
 </resources>

@@ -1,5 +1,6 @@
 package net.swierczynski.autoresponder;
 
+import net.swierczynski.autoresponder.preferences.UserPreferences;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -53,6 +54,8 @@ public class NotificationArea {
 
 	public void incrementRepliesCounter() {
 		repliesCounter++;
-		updateNotification();
+		if (UserPreferences.isIconInTaskbarSelected(mCtx)) {
+			updateNotification();
+		}
 	}
 }

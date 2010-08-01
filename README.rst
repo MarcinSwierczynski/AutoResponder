@@ -8,6 +8,9 @@ Official website: autoresponder.swierczynski.net
 History of changes
 ==================
 
+*1.4.5* (2010-08-01)
+   - Preferences: hide icon in taskbar
+
 *1.4.0* (2010-07-25)
    - Show sent messages in contact history
    - Bug fixes

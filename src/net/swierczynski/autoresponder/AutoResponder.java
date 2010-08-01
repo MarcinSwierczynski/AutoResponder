@@ -1,12 +1,13 @@
 package net.swierczynski.autoresponder;
 
 import net.swierczynski.autoresponder.calls.UnreceivedCallsService;
+import net.swierczynski.autoresponder.preferences.UserPreferences;
 import net.swierczynski.autoresponder.texts.IncomingMsgsService;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class AutoResponder extends Activity {
+	private final static int MENU_PREFERENCES = Menu.FIRST;
+	
 	private AutoResponderDbAdapter dbAdapter;
 
 	@Override
@@ -139,6 +142,28 @@ public class AutoResponder extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		dbAdapter.close();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(Menu.NONE, MENU_PREFERENCES, Menu.NONE, R.string.menu_preferences);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		
+		switch(item.getItemId()) {
+			case MENU_PREFERENCES: {
+				Intent i = new Intent(this, UserPreferences.class);
+				startActivity(i);
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }
