@@ -43,7 +43,7 @@ public class UnreceivedCallListener extends PhoneStateListener {
 
 	private void sendMsgIfCallWasntReceived() {
 		if(callWasUnreceived && phoneNumber != null) {
-			msgSender.sendTextMessage(phoneNumber);
+			msgSender.sendTextMessageIfPossible(phoneNumber);
 
 			callWasUnreceived = false;
 			phoneNumber = null;

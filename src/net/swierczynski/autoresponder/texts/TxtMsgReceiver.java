@@ -60,7 +60,7 @@ public class TxtMsgReceiver extends BroadcastReceiver {
 	
 	private void sendMessagesToAuthors(String[] numbers) {
 		for (String number : numbers) {
-			msgSender.sendTextMessage(number);
+			msgSender.sendTextMessageIfPossible(number);
 		}
 	}
 }
