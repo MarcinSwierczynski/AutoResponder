@@ -8,6 +8,11 @@ Official website: autoresponder.swierczynski.net
 History of changes
 ==================
 
+*1.5.0* (2010-08-08)
+   - Preferences: respond to known numbers only
+   - Reset replies counter
+   - About activity
+
 *1.4.5* (2010-08-01)
    - Preferences: hide icon in taskbar
 
