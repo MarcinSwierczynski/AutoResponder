@@ -63,7 +63,7 @@ public class NotificationArea {
 	}
 
 	private void updateCounterIfIconIsDisplayed() {
-		if (UserPreferences.isIconInTaskbarSelected(mCtx)) {
+		if (UserPreferences.isIconInTaskbarSelected(mCtx) && notification != null) {
 			updateNotification();
 		}
 	}
