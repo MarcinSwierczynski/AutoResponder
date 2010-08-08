@@ -22,7 +22,6 @@ public class AutoResponderDbAdapter {
     
     private final Context mCtx;
 	private DatabaseHelper mDbHelper;
-	private SQLiteDatabase mDb;
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -64,7 +63,6 @@ public class AutoResponderDbAdapter {
     
     public AutoResponderDbAdapter open() throws SQLException {
     	mDbHelper = new DatabaseHelper(mCtx);
-		mDb = mDbHelper.getWritableDatabase();
     	return this;
     }
     
@@ -85,11 +83,14 @@ public class AutoResponderDbAdapter {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_MSG_PROFILE, profile);
 		initialValues.put(KEY_MSG_BODY, body);
-		mDb.insert(DATABASE_TABLE, null, initialValues);
+		
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		db.insert(DATABASE_TABLE, null, initialValues);
 	}
     
     private Cursor fetchMessage(String profile) {
-    	Cursor c = mDb.query(DATABASE_TABLE, new String[] {KEY_MSG_PROFILE, KEY_MSG_BODY}, 
+    	SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		Cursor c = db.query(DATABASE_TABLE, new String[] {KEY_MSG_PROFILE, KEY_MSG_BODY}, 
     				KEY_MSG_PROFILE + "= '" + profile + "'", null, null, null, null);
     	if (c != null) {
 			c.moveToFirst();
@@ -113,7 +114,8 @@ public class AutoResponderDbAdapter {
     private boolean updateMessage(String profile, String body) {
     	ContentValues args = new ContentValues();
     	args.put(KEY_MSG_BODY, body);
-    	return mDb.update(DATABASE_TABLE, args, KEY_MSG_PROFILE + "= '" + profile + "'", null) > 0;
+    	SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		return db.update(DATABASE_TABLE, args, KEY_MSG_PROFILE + "= '" + profile + "'", null) > 0;
     }
     
     public static AutoResponderDbAdapter initializeDatabase(Context ctx) {
