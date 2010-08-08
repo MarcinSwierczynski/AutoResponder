@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.swierczynski.autoresponder"
-      android:versionCode="6"
-      android:versionName="1.4.5">
+      android:versionCode="7"
+      android:versionName="1.5.0">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name=".AutoResponder"
                   android:label="@string/app_name">
@@ -16,10 +16,14 @@
 				  android:label="Preferences">
         </activity>
         
+        <activity android:name=".About"
+				  android:label="About">
+        </activity>
+        
         <service android:name=".AutoResponderService" />
         <service android:name=".history.SentSmsLogger" />
 
-</application>
+	</application>
     <uses-sdk android:minSdkVersion="3" />
 
 <uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>

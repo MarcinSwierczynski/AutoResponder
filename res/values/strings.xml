@@ -19,4 +19,12 @@
     </string-array>
     <string name="menu_preferences">Preferences</string>
     <string name="menu_reset">Reset counter</string>
+    <string name="menu_about">About</string>
+    
+    <!-- About activity -->
+    <string name="author">Author: Marcin Świerczyński</string>
+    <string name="email">E-mail: marcin@swierczynski.net</string>
+    <string name="website">Website:</string>
+    <string name="website_address">http://autoresponder.swierczynski.net</string>
+    <string name="ok">OK</string>
 </resources>

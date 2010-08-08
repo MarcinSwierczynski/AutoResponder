@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:fillViewport="true" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" >
+	
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="@string/app_name"
+			android:gravity="center" android:textSize="9pt" android:layout_margin="8px" />
+		
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:textSize="7pt" 
+			android:text="@string/author" android:layout_margin="8px" />
+		
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:autoLink="email" 
+			android:textSize="7pt" android:text="@string/email" android:layout_margin="8px" />
+	
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginLeft="8px"
+			android:textSize="7pt" android:text="@string/website" android:layout_marginTop="8px"/>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:autoLink="web" 
+			android:textSize="7pt" android:text="@string/website_address" android:layout_marginTop="0px" android:layout_marginBottom="8px" android:layout_marginLeft="8px" android:layout_marginRight="8px"/>
+		
+		<Button android:id="@+id/ok" android:text="@string/ok"
+			android:layout_width="fill_parent" android:layout_height="wrap_content" 
+			android:layout_margin="8px" />
+	</LinearLayout>
+</ScrollView>
