@@ -20,6 +20,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class AutoResponder extends Activity {
 	private final static int MENU_PREFERENCES = Menu.FIRST;
+	private final static int MENU_RESET = 2;
 	
 	private AutoResponderDbAdapter dbAdapter;
 
@@ -147,7 +148,8 @@ public class AutoResponder extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(Menu.NONE, MENU_PREFERENCES, Menu.NONE, R.string.menu_preferences);
+		menu.add(Menu.NONE, MENU_PREFERENCES, 0, R.string.menu_preferences);
+		menu.add(Menu.NONE, MENU_RESET, 1, R.string.menu_reset);
 		return true;
 	}
 	
@@ -159,6 +161,12 @@ public class AutoResponder extends Activity {
 			case MENU_PREFERENCES: {
 				Intent i = new Intent(this, UserPreferences.class);
 				startActivity(i);
+				return true;
+			}
+			case MENU_RESET: {
+				Intent service = new Intent(this, AutoResponderService.class);
+				service.putExtra("mode", "reset");
+				startService(service);
 				return true;
 			}
 		}

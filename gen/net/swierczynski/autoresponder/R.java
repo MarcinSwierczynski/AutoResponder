@@ -32,6 +32,7 @@ public final class R {
         public static final int enable_calls=0x7f050003;
         public static final int enable_texts=0x7f050004;
         public static final int menu_preferences=0x7f050008;
+        public static final int menu_reset=0x7f050009;
         public static final int message_saved=0x7f050006;
         public static final int msg_body=0x7f050001;
         public static final int notification_text=0x7f050007;

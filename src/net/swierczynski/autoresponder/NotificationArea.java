@@ -54,6 +54,15 @@ public class NotificationArea {
 
 	public void incrementRepliesCounter() {
 		repliesCounter++;
+		updateCounterIfIconIsDisplayed();
+	}
+	
+	public void resetRepliesCounter() {
+		repliesCounter = 0;
+		updateCounterIfIconIsDisplayed();
+	}
+
+	private void updateCounterIfIconIsDisplayed() {
 		if (UserPreferences.isIconInTaskbarSelected(mCtx)) {
 			updateNotification();
 		}

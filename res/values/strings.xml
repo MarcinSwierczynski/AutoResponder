@@ -18,4 +18,5 @@
         <item>My own 3</item>
     </string-array>
     <string name="menu_preferences">Preferences</string>
+    <string name="menu_reset">Reset counter</string>
 </resources>

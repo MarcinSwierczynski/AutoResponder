@@ -39,11 +39,19 @@ public class AutoResponderService extends Service implements OnSharedPreferenceC
 		if(intent != null) {
 			Bundle extras = intent.getExtras();
 			if(extras != null) {
-				boolean isEnabled = extras.getBoolean("isEnabled");
 				String mode = extras.getString("mode");
-				changeServiceMode(mode, isEnabled);
+				if (mode.equals("reset")) {
+					notificationArea.resetRepliesCounter();
+				} else {
+					boolean isEnabled = extras.getBoolean("isEnabled");
+					changeServiceModeAndPropagateItsState(isEnabled, mode);
+				}
 			}
 		}
+	}
+
+	private void changeServiceModeAndPropagateItsState(boolean isEnabled, String mode) {
+		changeServiceMode(mode, isEnabled);
 		propagateStateToNotificationArea();
 		stopIfNoRespondingServicesAreActive();
 	}
