@@ -2,8 +2,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 	<PreferenceCategory android:title="Responding">
 		<CheckBoxPreference android:key="ALLOW_SENDING_TO_UNKNOWN" android:title="Respond to unknown"
-							android:summary="Also respond to calls and messages from unknown numbers"
-							android:defaultValue="false" />
+							android:summary="Experimental: Also respond to calls and messages from unknown numbers."
+							android:defaultValue="true" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="User interface">
 		<CheckBoxPreference android:key="ICON_IN_TASKBAR" android:title="Show icon in taskbar"
