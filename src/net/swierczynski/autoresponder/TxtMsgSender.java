@@ -1,9 +1,7 @@
 package net.swierczynski.autoresponder;
 
 import net.swierczynski.autoresponder.history.SentSmsLogger;
-import net.swierczynski.autoresponder.preferences.UserPreferences;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.telephony.gsm.SmsManager;
 
 public class TxtMsgSender {
@@ -30,11 +28,7 @@ public class TxtMsgSender {
 	}
 	
 	private boolean shouldSendMessage(String telNumber) {
-		boolean telNumberExists = telNumber != null && telNumber.length() > 0;
-		boolean sendingToUnknownNumbersAllowed = UserPreferences.allowSendingToUnknownNumbers(TxtMsgSender.ctx);
-		boolean numberIsInPhonebook = NumberInPhonebookChecker.isInPhonebook(TxtMsgSender.ctx, telNumber);
-		
-		return telNumberExists && (sendingToUnknownNumbersAllowed || numberIsInPhonebook);
+		return telNumber != null && telNumber.length() > 0;
 	}
 
 	private void saveMessageToHistory(String telNumber, String messageBody) {

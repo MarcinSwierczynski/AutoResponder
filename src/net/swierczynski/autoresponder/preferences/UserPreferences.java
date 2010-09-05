@@ -23,10 +23,6 @@ public class UserPreferences extends PreferenceActivity {
 		return UserPreferences.isOptionSelected(ctx, "ICON_IN_TASKBAR", true);
 	}
 	
-	public static boolean allowSendingToUnknownNumbers(Context ctx) {
-		return UserPreferences.isOptionSelected(ctx, "ALLOW_SENDING_TO_UNKNOWN", false);
-	}
-	
 	private static boolean isOptionSelected(Context ctx, String name, boolean defaultValue) {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
 		return preferences.getBoolean(name, defaultValue);

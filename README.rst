@@ -8,6 +8,10 @@ Official website: autoresponder.swierczynski.net
 History of changes
 ==================
 
+*1.5.2* (2010-09-05)
+   - "Respond to known numbers only" feature deleted
+   - Bug fixes
+
 *1.5.0* (2010-08-08)
    - Preferences: respond to known numbers only
    - Reset replies counter

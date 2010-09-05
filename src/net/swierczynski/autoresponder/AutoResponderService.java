@@ -110,9 +110,7 @@ public class AutoResponderService extends Service implements OnSharedPreferenceC
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		if (key.equals("ICON_IN_TASKBAR")) {
-			propagateStateToNotificationArea();
-		}
+		propagateStateToNotificationArea();
 	}
 
 }
