@@ -4,8 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.*;
 
 public class AutoResponderDbAdapter {
 	public static final String KEY_MSG_PROFILE = "_profile";
@@ -67,7 +66,11 @@ public class AutoResponderDbAdapter {
     }
     
     public void close() {
-    	mDbHelper.close();
+    	try {
+			mDbHelper.close();
+		} catch (SQLiteException e) {
+			// do nothing
+		}
     }
     
     public void saveMessage(String profile, String body) {
