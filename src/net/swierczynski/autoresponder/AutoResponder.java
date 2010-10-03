@@ -4,18 +4,11 @@ import net.swierczynski.autoresponder.calls.UnreceivedCallsService;
 import net.swierczynski.autoresponder.preferences.UserPreferences;
 import net.swierczynski.autoresponder.texts.IncomingMsgsService;
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.os.Bundle;
 import android.view.*;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class AutoResponder extends Activity {
@@ -166,9 +159,8 @@ public class AutoResponder extends Activity {
 				return true;
 			}
 			case MENU_RESET: {
-				Intent service = new Intent(this, AutoResponderService.class);
-				service.putExtra("mode", "reset");
-				startService(service);
+				Intent intent = new Intent(NotificationArea.RESET);
+				sendBroadcast(intent);
 				return true;
 			}
 			case MENU_ABOUT: {

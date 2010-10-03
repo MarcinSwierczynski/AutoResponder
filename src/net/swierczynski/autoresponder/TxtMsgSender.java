@@ -9,11 +9,9 @@ public class TxtMsgSender {
 	private static String profile = "Main";
 
 	private AutoResponderDbAdapter dbAdapter;
-	private NotificationArea notificationArea;
 	
-	private TxtMsgSender(AutoResponderDbAdapter dbAdapter, NotificationArea notificationArea) {
+	private TxtMsgSender(AutoResponderDbAdapter dbAdapter) {
 		this.dbAdapter = dbAdapter;
-		this.notificationArea = notificationArea;
 	}
 
 	public void sendTextMessageIfPossible(String telNumber) {
@@ -23,10 +21,16 @@ public class TxtMsgSender {
 			SmsManager smsMgr = SmsManager.getDefault();
 			smsMgr.sendTextMessage(telNumber, null, messageBody, null, null);
 			saveMessageToHistory(telNumber, messageBody);
-			notificationArea.incrementRepliesCounter();
+			
+			incrementCounter();
 		}
 	}
 	
+	private void incrementCounter() {
+		Intent intent = new Intent(NotificationArea.INCREMENT);
+		ctx.sendBroadcast(intent);
+	}
+
 	private boolean shouldSendMessage(String telNumber) {
 		return telNumber != null && telNumber.length() > 0;
 	}
@@ -46,11 +50,11 @@ public class TxtMsgSender {
 		return profile;
 	}
 	
-	public static TxtMsgSender createAndSetUp(Context ctx, NotificationArea notificationArea) {
+	public static TxtMsgSender createAndSetUp(Context ctx) {
 		TxtMsgSender.ctx = ctx;
 		
 		AutoResponderDbAdapter dbAdapter = AutoResponderDbAdapter.initializeDatabase(ctx);
-		TxtMsgSender txtMsgSender = new TxtMsgSender(dbAdapter, notificationArea);
+		TxtMsgSender txtMsgSender = new TxtMsgSender(dbAdapter);
 		return txtMsgSender;
 	}
 	

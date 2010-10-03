@@ -13,7 +13,8 @@ public class AutoResponderService extends Service implements OnSharedPreferenceC
 
 	private UnreceivedCallsService callsService;
 	private IncomingMsgsService msgsService;
-	private NotificationArea notificationArea;
+
+	private BroadcastReceiver notificationAreaReceiver;
 	
 	@Override
 	public void onCreate() {
@@ -23,15 +24,39 @@ public class AutoResponderService extends Service implements OnSharedPreferenceC
 	}
 
 	private void initializeServiceFirstStart() {
-		notificationArea = new NotificationArea(this);
-		callsService = new UnreceivedCallsService(this, notificationArea);
-		msgsService = new IncomingMsgsService(this, notificationArea);
+		registerNotificationAreaReceiver();
+		
+		callsService = new UnreceivedCallsService(this);
+		msgsService = new IncomingMsgsService(this);
+		
 		UserPreferences.registerPreferencesChangeListener(getApplicationContext(), this);
 	}
 	
+	private void registerNotificationAreaReceiver() {
+		notificationAreaReceiver = new NotificationArea(this).new Receiver();
+		
+		IntentFilter incrementFilter = new IntentFilter(NotificationArea.INCREMENT);
+		registerReceiver(notificationAreaReceiver, incrementFilter);
+		
+		IntentFilter resetFilter = new IntentFilter(NotificationArea.RESET);
+		registerReceiver(notificationAreaReceiver, resetFilter);
+		
+		IntentFilter showIconFilter = new IntentFilter(NotificationArea.SHOW_ICON);
+		registerReceiver(notificationAreaReceiver, showIconFilter);
+		
+		IntentFilter hideIconFilter = new IntentFilter(NotificationArea.HIDE_ICON);
+		registerReceiver(notificationAreaReceiver, hideIconFilter);
+	}
+
 	@Override
 	public void onDestroy() {
-		notificationArea.hideNotificationIcon();
+		hideNotificationIcon();
+		unregisterReceiver(notificationAreaReceiver);
+	}
+
+	private void hideNotificationIcon() {
+		Intent intent = new Intent(NotificationArea.HIDE_ICON);
+		sendBroadcast(intent);
 	}
 	
 	@Override
@@ -40,34 +65,16 @@ public class AutoResponderService extends Service implements OnSharedPreferenceC
 			Bundle extras = intent.getExtras();
 			if(extras != null) {
 				String mode = extras.getString("mode");
-				if (mode.equals("reset")) {
-					notificationArea.resetRepliesCounter();
-				} else {
-					boolean isEnabled = extras.getBoolean("isEnabled");
-					changeServiceModeAndPropagateItsState(isEnabled, mode);
-				}
+				boolean isEnabled = extras.getBoolean("isEnabled");
+				changeServiceModeAndPropagateItsState(isEnabled, mode);
 			}
 		}
 	}
-
+	
 	private void changeServiceModeAndPropagateItsState(boolean isEnabled, String mode) {
 		changeServiceMode(mode, isEnabled);
 		propagateStateToNotificationArea();
 		stopIfNoRespondingServicesAreActive();
-	}
-
-	private void propagateStateToNotificationArea() {
-		if(UserPreferences.isIconInTaskbarSelected(this) && isAnyRespondingServiceActive()) {
-			notificationArea.showNotificationIcon();			
-		} else {
-			notificationArea.hideNotificationIcon();
-		}
-	}
-
-	private void stopIfNoRespondingServicesAreActive() {
-		if (!isAnyRespondingServiceActive()) {
-			stopSelf();
-		}
 	}
 	
 	private void changeServiceMode(String mode, boolean isEnabled) {
@@ -94,6 +101,26 @@ public class AutoResponderService extends Service implements OnSharedPreferenceC
 		}
 	}
 	
+	private void propagateStateToNotificationArea() {
+		String iconState = getNewIconState();
+		Intent intent = new Intent(iconState);
+		sendBroadcast(intent);
+	}
+
+	private String getNewIconState() {
+		if(UserPreferences.isIconInTaskbarSelected(this) && isAnyRespondingServiceActive()) {
+			return NotificationArea.SHOW_ICON;
+		} else {
+			return NotificationArea.HIDE_ICON;
+		}
+	}
+
+	private void stopIfNoRespondingServicesAreActive() {
+		if (!isAnyRespondingServiceActive()) {
+			stopSelf();
+		}
+	}
+
 	private static boolean isAnyRespondingServiceActive() {
 		return UnreceivedCallsService.isActive || IncomingMsgsService.isActive;
 	}

@@ -4,10 +4,14 @@ import net.swierczynski.autoresponder.preferences.UserPreferences;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 
 public class NotificationArea {
+	
+	public static final String SHOW_ICON = "net.swierczynski.autoresponder.SHOW_ICON";
+	public static final String HIDE_ICON = "net.swierczynski.autoresponder.HIDE_ICON";
+	public static final String INCREMENT = "net.swierczynski.autoresponder.INCREMENT_COUNTER";
+	public static final String RESET = "net.swierczynski.autoresponder.RESET_COUNTER";
 	
 	private final Context mCtx;
 	private NotificationManager notificationManager;
@@ -20,12 +24,12 @@ public class NotificationArea {
 		this.repliesCounter = 0;
 	}
 	
-	public void showNotificationIcon() {
+	private void showNotificationIcon() {
 		createNotification();
 		updateNotification();
 	}
 	
-	public void hideNotificationIcon() {
+	private void hideNotificationIcon() {
 		notificationManager.cancel(R.string.app_name);
 	}
 
@@ -52,12 +56,12 @@ public class NotificationArea {
 		notification.flags |= Notification.FLAG_NO_CLEAR;
 	}
 
-	public void incrementRepliesCounter() {
+	private void incrementRepliesCounter() {
 		repliesCounter++;
 		updateCounterIfIconIsDisplayed();
 	}
 	
-	public void resetRepliesCounter() {
+	private void resetRepliesCounter() {
 		repliesCounter = 0;
 		updateCounterIfIconIsDisplayed();
 	}
@@ -65,6 +69,22 @@ public class NotificationArea {
 	private void updateCounterIfIconIsDisplayed() {
 		if (UserPreferences.isIconInTaskbarSelected(mCtx) && notification != null) {
 			updateNotification();
+		}
+	}
+	
+	public class Receiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals(INCREMENT)) {
+				incrementRepliesCounter();
+			} else if (action.equals(RESET)) {
+				resetRepliesCounter();
+			} else if (action.equals(SHOW_ICON)) {
+				showNotificationIcon();
+			} else if (action.equals(HIDE_ICON)) {
+				hideNotificationIcon();
+			}
 		}
 	}
 }
