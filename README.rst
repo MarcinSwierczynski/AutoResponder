@@ -1,7 +1,7 @@
 About AutoResponder
 -------------------
 
-AutoResponder is an Android app that sends text messages to your callers, if you can't answer the phone. You can customize the message content. You can also set different messages for different occasions (at work, with friends, etc.) Now it replies to texts messages!
+AutoResponder is an Android app that sends text messages to your callers, if you can't answer the phone. You can customize the message content. You can also set different messages for different occasions (at work, with friends, etc.) Now it replies to texts messages! Options menu added.
 
 Official website: autoresponder.swierczynski.net
 
